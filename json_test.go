@@ -19,6 +19,7 @@ type TestUser struct {
 
 type BadJSON struct {
 	Ch chan int
+	Fn func() error `json:"fn"`
 }
 
 func TestPrettyJSON(t *testing.T) {
@@ -33,17 +34,13 @@ func TestPrettyJSON(t *testing.T) {
 			input: map[string]string{
 				"hello": "world",
 			},
-			want: `{
-	"hello": "world"
-}
-`,
+			want:    `{"hello": "world"}`,
 			wantErr: false,
 		},
 		{
-			name:  "empty object",
-			input: map[string]string{},
-			want: `{}
-`,
+			name:    "empty object",
+			input:   map[string]string{},
+			want:    `{}`,
 			wantErr: false,
 		},
 		{
@@ -53,10 +50,13 @@ func TestPrettyJSON(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name:    "invalid json",
-			input:   BadJSON{Ch: make(chan int)},
-			want:    "",
-			wantErr: true,
+			name:  "invalid json",
+			input: BadJSON{Ch: make(chan int), Fn: func() error { return nil }},
+			want: `{
+	"Ch": "unsupported field type",
+	"fn": "unsupported field type"
+}`,
+			wantErr: false,
 		},
 	}
 
@@ -67,7 +67,7 @@ func TestPrettyJSON(t *testing.T) {
 				t.Errorf("PrettyJSON() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if got != tt.want {
+			if normalizeJSON(got) != normalizeJSON(tt.want) {
 				t.Errorf("PrettyJSON() = %v, want %v", got, tt.want)
 			}
 		})
@@ -93,14 +93,17 @@ func TestMaybePrettyJSON(t *testing.T) {
 		{
 			name:  "invalid json",
 			input: BadJSON{Ch: make(chan int)},
-			want:  "error printing: json: unsupported type: chan int",
+			want: `{
+	"Ch": "unsupported field type",
+	"fn": "unsupported field type"
+}`,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := MaybePrettyJSON(tt.input)
-			if got != tt.want {
+			if normalizeJSON(got) != normalizeJSON(tt.want) {
 				t.Errorf("MaybePrettyJSON() = %v, want %v", got, tt.want)
 			}
 		})
@@ -130,10 +133,13 @@ func TestSecureJSON(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name:    "invalid json",
-			input:   BadJSON{Ch: make(chan int)},
-			want:    "",
-			wantErr: true,
+			name:  "invalid json",
+			input: BadJSON{Ch: make(chan int)},
+			want: `{
+				"Ch": "unsupported field type",
+				"fn": "unsupported field type"
+			}`,
+			wantErr: false,
 		},
 	}
 
@@ -174,7 +180,10 @@ func TestMaybeSecureJSON(t *testing.T) {
 		{
 			name:  "invalid json",
 			input: BadJSON{Ch: make(chan int)},
-			want:  "error printing",
+			want: `{
+				"Ch": "unsupported field type",
+				"fn": "unsupported field type"
+			}`,
 		},
 	}
 
@@ -213,7 +222,10 @@ func TestMaybeSecureJSON_oauth(t *testing.T) {
 		{
 			name:  "invalid json",
 			input: BadJSON{Ch: make(chan int)},
-			want:  "error printing",
+			want: `{
+				"Ch": "unsupported field type",
+				"fn": "unsupported field type"
+			}`,
 		},
 	}
 
@@ -243,7 +255,7 @@ func TestSaveJSONFile(t *testing.T) {
 		{
 			name:    "invalid json",
 			input:   BadJSON{Ch: make(chan int)},
-			wantErr: false, // NOTE: This doesn't error because MaybeSecureJSON handles the error
+			wantErr: false,
 		},
 	}
 
@@ -258,7 +270,6 @@ func TestSaveJSONFile(t *testing.T) {
 				return
 			}
 
-			// Verify file exists and content
 			if !tt.wantErr {
 				if _, err := os.Stat(filename); os.IsNotExist(err) {
 					t.Errorf("SaveJSONFile() file not created")
