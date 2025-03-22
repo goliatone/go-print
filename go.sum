@@ -1,7 +1,5 @@
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/goliatone/go-masker v0.0.0-20241124214202-bbd1e02b877a h1:4ZAeIbfrzfYtBp3ero+v5T6h7bWX6W3+R/NNELchPHE=
-github.com/goliatone/go-masker v0.0.0-20241124214202-bbd1e02b877a/go.mod h1:n+AV93IO1rNI35kjbjfV1gMkjuIOSDVEzfhABTlCf4U=
 github.com/goliatone/go-masker v0.0.1 h1:rG9CR+1uCsNva94s92WL4ZQwRe0uiJAeoa6bWc552WU=
 github.com/goliatone/go-masker v0.0.1/go.mod h1:n+AV93IO1rNI35kjbjfV1gMkjuIOSDVEzfhABTlCf4U=
 github.com/google/go-cmp v0.5.9 h1:O2Tfq5qg4qc4AmwVlvv0oLiVAGB7enBSJ2x2DqQFi38=
@@ -12,5 +10,7 @@ github.com/showa-93/go-mask v0.6.2 h1:sJEUQRpbxUoMTfBKey5K9hCg+eSx5KIAZFT7pa1LXb
 github.com/showa-93/go-mask v0.6.2/go.mod h1:aswIj007gm0EPAzOGES9ACy1jDm3QT08/LPSClMp410=
 github.com/stretchr/testify v1.8.2 h1:+h33VjcLVPDHtOdpUCuF+7gSuG3yGIftsP1YvFihtJ8=
 github.com/stretchr/testify v1.8.2/go.mod h1:w2LPCIKwWwSfY2zedu0+kehJoqGctiVI29o6fzry7u4=
+golang.org/x/oauth2 v0.28.0 h1:CrgCKl8PPAVtLnU3c+EDw6x11699EWlsDeWNWKdIOkc=
+golang.org/x/oauth2 v0.28.0/go.mod h1:onh5ek6nERTohokkhCD/y2cV4Do3fxFHFuAejCkRWT8=
 gopkg.in/yaml.v3 v3.0.1 h1:fxVm/GzAzEWqLHuvctI91KS9hhNmmWOoWu0XTYJS7CA=
 gopkg.in/yaml.v3 v3.0.1/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
