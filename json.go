@@ -31,7 +31,7 @@ func PrettyJSON(data interface{}) (string, error) {
 func MaybePrettyJSON(data interface{}) string {
 	out, err := PrettyJSON(data)
 	if err != nil {
-		return "error printing"
+		return fmt.Sprintf("error printing: %s", err)
 	}
 	return out
 }
