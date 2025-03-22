@@ -6,6 +6,9 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
+
+	"golang.org/x/oauth2"
 )
 
 type TestUser struct {
@@ -16,12 +19,13 @@ type TestUser struct {
 
 type BadJSON struct {
 	Ch chan int
+	Fn func() error `json:"fn"`
 }
 
 func TestPrettyJSON(t *testing.T) {
 	tests := []struct {
 		name    string
-		input   interface{}
+		input   any
 		want    string
 		wantErr bool
 	}{
@@ -30,17 +34,13 @@ func TestPrettyJSON(t *testing.T) {
 			input: map[string]string{
 				"hello": "world",
 			},
-			want: `{
-	"hello": "world"
-}
-`,
+			want:    `{"hello": "world"}`,
 			wantErr: false,
 		},
 		{
-			name:  "empty object",
-			input: map[string]string{},
-			want: `{}
-`,
+			name:    "empty object",
+			input:   map[string]string{},
+			want:    `{}`,
 			wantErr: false,
 		},
 		{
@@ -50,10 +50,13 @@ func TestPrettyJSON(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name:    "invalid json",
-			input:   BadJSON{Ch: make(chan int)},
-			want:    "",
-			wantErr: true,
+			name:  "invalid json",
+			input: BadJSON{Ch: make(chan int), Fn: func() error { return nil }},
+			want: `{
+	"Ch": "unsupported field type",
+	"fn": "unsupported field type"
+}`,
+			wantErr: false,
 		},
 	}
 
@@ -64,7 +67,7 @@ func TestPrettyJSON(t *testing.T) {
 				t.Errorf("PrettyJSON() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if got != tt.want {
+			if normalizeJSON(got) != normalizeJSON(tt.want) {
 				t.Errorf("PrettyJSON() = %v, want %v", got, tt.want)
 			}
 		})
@@ -74,7 +77,7 @@ func TestPrettyJSON(t *testing.T) {
 func TestMaybePrettyJSON(t *testing.T) {
 	tests := []struct {
 		name  string
-		input interface{}
+		input any
 		want  string
 	}{
 		{
@@ -90,14 +93,17 @@ func TestMaybePrettyJSON(t *testing.T) {
 		{
 			name:  "invalid json",
 			input: BadJSON{Ch: make(chan int)},
-			want:  "error printing",
+			want: `{
+	"Ch": "unsupported field type",
+	"fn": "unsupported field type"
+}`,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := MaybePrettyJSON(tt.input)
-			if got != tt.want {
+			if normalizeJSON(got) != normalizeJSON(tt.want) {
 				t.Errorf("MaybePrettyJSON() = %v, want %v", got, tt.want)
 			}
 		})
@@ -107,7 +113,7 @@ func TestMaybePrettyJSON(t *testing.T) {
 func TestSecureJSON(t *testing.T) {
 	tests := []struct {
 		name    string
-		input   interface{}
+		input   any
 		want    string
 		wantErr bool
 	}{
@@ -127,10 +133,13 @@ func TestSecureJSON(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name:    "invalid json",
-			input:   BadJSON{Ch: make(chan int)},
-			want:    "",
-			wantErr: true,
+			name:  "invalid json",
+			input: BadJSON{Ch: make(chan int)},
+			want: `{
+				"Ch": "unsupported field type",
+				"fn": "unsupported field type"
+			}`,
+			wantErr: false,
 		},
 	}
 
@@ -151,7 +160,7 @@ func TestSecureJSON(t *testing.T) {
 func TestMaybeSecureJSON(t *testing.T) {
 	tests := []struct {
 		name  string
-		input interface{}
+		input any
 		want  string
 	}{
 		{
@@ -171,7 +180,52 @@ func TestMaybeSecureJSON(t *testing.T) {
 		{
 			name:  "invalid json",
 			input: BadJSON{Ch: make(chan int)},
-			want:  "error printing",
+			want: `{
+				"Ch": "unsupported field type",
+				"fn": "unsupported field type"
+			}`,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := MaybeSecureJSON(tt.input)
+			if normalizeJSON(got) != normalizeJSON(tt.want) {
+				t.Errorf("MaybeSecureJSON() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestMaybeSecureJSON_oauth(t *testing.T) {
+	now, _ := time.Parse("2006-01-02T15:04:05Z07:00", "2025-03-22T15:17:04.319418-07:00")
+
+	tests := []struct {
+		name  string
+		input any
+		want  string
+	}{
+		{
+			name: "valid sensitive data",
+			input: &oauth2.Token{
+				AccessToken:  "THIS IS AN ACCESS TOKEN AND IT SHOULD NOT BE SHOWN AT ALL, JUST SOME TEXT AT THE START AND THE END",
+				RefreshToken: "THIS IS AN ACCESS TOKEN AND IT SHOULD NOT BE SHOWN AT ALL, JUST SOME TEXT AT THE START AND THE END",
+				Expiry:       now,
+			},
+			want: `{
+	"access_token": "THIS****************************************************************************************** END",
+	"refresh_token": "THIS****************************************************************************************** END",
+	"expiry": "2025-03-22T15:17:04.319418-07:00"
+}
+`,
+		},
+		{
+			name:  "invalid json",
+			input: BadJSON{Ch: make(chan int)},
+			want: `{
+				"Ch": "unsupported field type",
+				"fn": "unsupported field type"
+			}`,
 		},
 	}
 
@@ -188,7 +242,7 @@ func TestMaybeSecureJSON(t *testing.T) {
 func TestSaveJSONFile(t *testing.T) {
 	tests := []struct {
 		name    string
-		input   interface{}
+		input   any
 		wantErr bool
 	}{
 		{
@@ -201,7 +255,7 @@ func TestSaveJSONFile(t *testing.T) {
 		{
 			name:    "invalid json",
 			input:   BadJSON{Ch: make(chan int)},
-			wantErr: false, // NOTE: This doesn't error because MaybeSecureJSON handles the error
+			wantErr: false,
 		},
 	}
 
@@ -216,7 +270,6 @@ func TestSaveJSONFile(t *testing.T) {
 				return
 			}
 
-			// Verify file exists and content
 			if !tt.wantErr {
 				if _, err := os.Stat(filename); os.IsNotExist(err) {
 					t.Errorf("SaveJSONFile() file not created")
@@ -229,7 +282,7 @@ func TestSaveJSONFile(t *testing.T) {
 func TestSaveSecureJSONFile(t *testing.T) {
 	tests := []struct {
 		name    string
-		input   interface{}
+		input   any
 		wantErr bool
 	}{
 		{
@@ -272,7 +325,7 @@ func TestSaveSecureJSONFile(t *testing.T) {
 // Helper function to normalize JSON strings for comparison
 func normalizeJSON(s string) string {
 	s = strings.TrimSpace(s)
-	var temp interface{}
+	var temp any
 	if err := json.Unmarshal([]byte(s), &temp); err != nil {
 		return s // Return original if not valid JSON
 	}
