@@ -8,17 +8,21 @@ import (
 )
 
 const (
-	empty = ""
-	tab   = "\t"
+	empty              = ""
+	tab                = "\t"
+	unsupportedMessage = "unsupported field type"
 )
 
 // PrettyJSON will pretty print as a JSON string
-func PrettyJSON(data interface{}) (string, error) {
+func PrettyJSON(data any) (string, error) {
+
+	safeData := safeToJSON(data)
+
 	buffer := new(bytes.Buffer)
 	encoder := json.NewEncoder(buffer)
 	encoder.SetIndent(empty, tab)
 
-	err := encoder.Encode(data)
+	err := encoder.Encode(safeData)
 	if err != nil {
 		return empty, err
 	}
@@ -28,7 +32,7 @@ func PrettyJSON(data interface{}) (string, error) {
 // MaybePrettyJSON will return a JSON string, in case
 // of a decofing error happening it will return the mesasge:
 // error printing
-func MaybePrettyJSON(data interface{}) string {
+func MaybePrettyJSON(data any) string {
 	out, err := PrettyJSON(data)
 	if err != nil {
 		return fmt.Sprintf("error printing: %s", err)
