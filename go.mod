@@ -5,7 +5,7 @@ go 1.23.0
 toolchain go1.23.4
 
 require (
-	github.com/goliatone/go-masker v0.0.1
+	github.com/goliatone/go-masker v0.1.0
 	golang.org/x/oauth2 v0.28.0
 )
 
