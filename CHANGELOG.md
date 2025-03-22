@@ -1,5 +1,19 @@
 # Changelog
 
+# [0.1.1](https://github.com/goliatone/go-print/compare/v0.1.0...v0.1.1) - (2025-03-22)
+
+## <!-- 13 -->📦 Bumps
+
+- Bump version: v0.1.1 ([71c2822](https://github.com/goliatone/go-print/commit/71c28221358c6c6b2cd74829efa805a207e4873c))  - (goliatone)
+
+## <!-- 3 -->📚 Documentation
+
+- Update changelog for v0.1.0 ([0e33d70](https://github.com/goliatone/go-print/commit/0e33d70fc9823603cb13449a652e5f45fbc3f30f))  - (goliatone)
+
+## <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Update deps ([63fcdb4](https://github.com/goliatone/go-print/commit/63fcdb47df9a7182fe2b61c4efa71ec85c0943ea))  - (goliatone)
+
 # [0.1.0](https://github.com/goliatone/go-print/compare/v0.0.1...v0.1.0) - (2025-03-22)
 
 ## <!-- 13 -->📦 Bumps
