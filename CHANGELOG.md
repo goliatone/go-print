@@ -1,5 +1,19 @@
 # Changelog
 
+# [0.1.2](https://github.com/goliatone/go-print/compare/v0.1.1...v0.1.2) - (2025-03-26)
+
+## <!-- 1 -->🐛 Bug Fixes
+
+- Hand JSON slices vs arrays ([e8f1922](https://github.com/goliatone/go-print/commit/e8f19226e3d5fa71140e0d4cf9a1c137e99fbdc1))  - (goliatone)
+
+## <!-- 13 -->📦 Bumps
+
+- Bump version: v0.1.2 ([2b65861](https://github.com/goliatone/go-print/commit/2b6586185480291a0bf72a6ff0a57ac480448ec0))  - (goliatone)
+
+## <!-- 3 -->📚 Documentation
+
+- Update changelog for v0.1.1 ([4582257](https://github.com/goliatone/go-print/commit/4582257d5a5f2e4e11662c727cb4b111752f1884))  - (goliatone)
+
 # [0.1.1](https://github.com/goliatone/go-print/compare/v0.1.0...v0.1.1) - (2025-03-22)
 
 ## <!-- 13 -->📦 Bumps
