@@ -27,40 +27,52 @@ func safeToJSON(v any) any {
 		reflect.Int8, reflect.Uint, reflect.Uint16, reflect.Uint64, reflect.Uint32,
 		reflect.Uint8, reflect.Float32, reflect.Float64, reflect.String:
 		return v
-	case reflect.Array, reflect.Slice:
+	case reflect.Array:
+		// arrays are never nil
+		arrResult := make([]any, val.Len())
+		for i := range val.Len() {
+			arrResult[i] = safeToJSON(val.Index(i).Interface())
+		}
+		return arrResult
+
+	case reflect.Slice:
+		// slices can be nil so IsNil() is valid
 		if val.IsNil() {
 			return nil
 		}
-		result := make([]any, val.Len())
-		for i := 0; i < val.Len(); i++ {
-			result[i] = safeToJSON(val.Index(i).Interface())
+		sliceResult := make([]any, val.Len())
+		for i := range val.Len() {
+			sliceResult[i] = safeToJSON(val.Index(i).Interface())
 		}
-		return result
+		return sliceResult
+
 	case reflect.Map:
 		if val.IsNil() {
 			return nil
 		}
-		result := make(map[string]any)
+		mapResult := make(map[string]any)
 		for _, key := range val.MapKeys() {
 			keyStr := fmt.Sprintf("%v", key.Interface())
-			result[keyStr] = safeToJSON(val.MapIndex(key).Interface())
+			mapResult[keyStr] = safeToJSON(val.MapIndex(key).Interface())
 		}
-		return result
+		return mapResult
+
 	case reflect.Struct:
 		if t, ok := v.(time.Time); ok {
 			return t.Format(time.RFC3339Nano)
 		}
 
-		result := make(map[string]any)
+		strucResult := make(map[string]any)
 		t := val.Type()
 
-		for i := 0; i < t.NumField(); i++ {
+		for i := range t.NumField() {
 			field := t.Field(i)
 
 			// skip unexported fields
 			if field.PkgPath != "" {
 				continue
 			}
+
 			fieldName := field.Name
 			jsonTag := field.Tag.Get("json")
 			if jsonTag != "" {
@@ -74,9 +86,11 @@ func safeToJSON(v any) any {
 					continue
 				}
 			}
+
 			fieldValue := val.Field(i).Interface()
 			safeValue := safeToJSON(fieldValue)
 
+			// Handle omitempty logic
 			shouldOmit := false
 			if jsonTag != "" && strings.Contains(jsonTag, "omitempty") {
 				isEmpty := false
@@ -94,18 +108,19 @@ func safeToJSON(v any) any {
 					case reflect.String:
 						isEmpty = reflect.ValueOf(safeValue).String() == ""
 					case reflect.Map, reflect.Slice, reflect.Array:
+						// reflect.ValueOf(safeValue).Len() is valid if safeValue != nil
 						isEmpty = reflect.ValueOf(safeValue).Len() == 0
 					}
 				}
-
 				shouldOmit = isEmpty
 			}
 
 			if !shouldOmit {
-				result[fieldName] = safeValue
+				strucResult[fieldName] = safeValue
 			}
 		}
-		return result
+		return strucResult
+
 	default:
 		return unsupportedMessage
 	}
