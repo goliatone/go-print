@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+
+	"github.com/alecthomas/chroma/v2/quick"
 )
 
 const (
@@ -38,6 +40,29 @@ func MaybePrettyJSON(data any) string {
 		return fmt.Sprintf("error printing: %s", err)
 	}
 	return out
+}
+
+func MaybeHighlightJSON(data any) string {
+	out, err := HighlightJSON(data)
+	if err != nil {
+		return fmt.Sprintf("error printing: %s", err)
+	}
+	return out
+}
+
+func HighlightJSON(data any) (string, error) {
+	out, err := PrettyJSON(data)
+	if err != nil {
+		return "", err
+	}
+
+	var buf bytes.Buffer
+	err = quick.Highlight(&buf, out, "json", "terminal16m", "nord")
+	if err != nil {
+		return "", fmt.Errorf("error highlighting: %w", err)
+	}
+
+	return buf.String(), nil
 }
 
 func SecureJSON(data any) (string, error) {
