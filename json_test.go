@@ -15,6 +15,7 @@ type TestUser struct {
 	Username string `json:"username"`
 	Password string `json:"password" mask:"filled4"`
 	APIKey   string `json:"api_key" mask:"filled32"`
+	Secret   string `json:"-"` // this should always be ignored
 }
 
 type BadJSON struct {
