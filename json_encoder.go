@@ -1,15 +1,32 @@
 package print
 
 import (
+	"encoding/json"
 	"fmt"
 	"reflect"
 	"strings"
 	"time"
 )
 
+// TODO: handle uuids
 func safeToJSON(v any) any {
 	if v == nil {
 		return nil
+	}
+
+	if m, ok := v.(json.Marshaler); ok {
+		b, err := m.MarshalJSON()
+		if err == nil {
+			var str string
+			if err := json.Unmarshal(b, &str); err == nil {
+				return str
+			}
+			return string(b)
+		}
+	}
+
+	if s, ok := v.(fmt.Stringer); ok {
+		return s.String()
 	}
 
 	val := reflect.ValueOf(v)
@@ -91,28 +108,9 @@ func safeToJSON(v any) any {
 			safeValue := safeToJSON(fieldValue)
 
 			// Handle omitempty logic
-			shouldOmit := false
+			var shouldOmit bool
 			if jsonTag != "" && strings.Contains(jsonTag, "omitempty") {
-				isEmpty := false
-				if safeValue == nil {
-					isEmpty = true
-				} else {
-					switch reflect.ValueOf(safeValue).Kind() {
-					case reflect.Bool:
-						isEmpty = !reflect.ValueOf(safeValue).Bool()
-					case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
-						reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-						isEmpty = reflect.ValueOf(safeValue).Int() == 0
-					case reflect.Float32, reflect.Float64:
-						isEmpty = reflect.ValueOf(safeValue).Float() == 0
-					case reflect.String:
-						isEmpty = reflect.ValueOf(safeValue).String() == ""
-					case reflect.Map, reflect.Slice, reflect.Array:
-						// reflect.ValueOf(safeValue).Len() is valid if safeValue != nil
-						isEmpty = reflect.ValueOf(safeValue).Len() == 0
-					}
-				}
-				shouldOmit = isEmpty
+				shouldOmit = isEmptyValue(safeValue)
 			}
 
 			if !shouldOmit {
@@ -124,5 +122,42 @@ func safeToJSON(v any) any {
 	default:
 		return unsupportedMessage
 	}
+}
 
+func isEmptyValue(v any) bool {
+	if v == nil {
+		return true
+	}
+
+	val := reflect.ValueOf(v)
+	switch val.Kind() {
+	case reflect.Bool:
+		return !val.Bool()
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		return val.Int() == 0
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		return val.Uint() == 0
+	case reflect.Float32, reflect.Float64:
+		return val.Float() == 0
+	case reflect.String:
+		return val.String() == ""
+	case reflect.Map, reflect.Slice, reflect.Array:
+		return val.Len() == 0
+	case reflect.Ptr:
+		if val.IsNil() {
+			return true
+		}
+		return isEmptyValue(val.Elem().Interface())
+	case reflect.Interface:
+		if val.IsNil() {
+			return true
+		}
+		return isEmptyValue(val.Elem().Interface())
+	case reflect.Struct:
+		if t, ok := v.(time.Time); ok {
+			return t.IsZero()
+		}
+	}
+
+	return false
 }
