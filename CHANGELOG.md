@@ -1,5 +1,28 @@
 # Changelog
 
+# [0.3.0](https://github.com/goliatone/go-print/compare/v0.2.0...v0.3.0) - (2025-04-18)
+
+## <!-- 1 -->🐛 Bug Fixes
+
+- Handle marshable or strigifiable things ([a61abf4](https://github.com/goliatone/go-print/commit/a61abf4107f00bd9a5429a8b24903b48a376fb9a))  - (goliatone)
+- Handle marshable or strigifiable things ([551dd9a](https://github.com/goliatone/go-print/commit/551dd9a87a04f4ce5d35389d726846b398366d79))  - (goliatone)
+
+## <!-- 13 -->📦 Bumps
+
+- Bump version: v0.3.0 ([6b5ddb9](https://github.com/goliatone/go-print/commit/6b5ddb971950d0e347c2d6ecf4c14c4ed3d31aa2))  - (goliatone)
+
+## <!-- 16 -->➕ Add
+
+- Secure highlight ([8dcf271](https://github.com/goliatone/go-print/commit/8dcf271f4ce22893730e37e2490acc59ac4f72aa))  - (goliatone)
+
+## <!-- 3 -->📚 Documentation
+
+- Update changelog for v0.2.0 ([77ffa57](https://github.com/goliatone/go-print/commit/77ffa5737cbb42b11d25e30be29446743cd3d1ec))  - (goliatone)
+
+## <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Update deps ([377e5c3](https://github.com/goliatone/go-print/commit/377e5c3f3eb4893525aa365b61b6231881a519ad))  - (goliatone)
+
 # [0.2.0](https://github.com/goliatone/go-print/compare/v0.1.2...v0.2.0) - (2025-04-14)
 
 ## <!-- 13 -->📦 Bumps
