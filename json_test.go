@@ -8,14 +8,16 @@ import (
 	"testing"
 	"time"
 
+	"github.com/google/uuid"
 	"golang.org/x/oauth2"
 )
 
 type TestUser struct {
-	Username string `json:"username"`
-	Password string `json:"password" mask:"filled4"`
-	APIKey   string `json:"api_key" mask:"filled32"`
-	Secret   string `json:"-"` // this should always be ignored
+	ID       uuid.UUID `json:"id,omitempty"`
+	Username string    `json:"username"`
+	Password string    `json:"password" mask:"filled4"`
+	APIKey   string    `json:"api_key" mask:"filled32"`
+	Secret   string    `json:"-"` // this should always be ignored
 }
 
 type BadJSON struct {
@@ -112,6 +114,7 @@ func TestMaybePrettyJSON(t *testing.T) {
 }
 
 func TestSecureJSON(t *testing.T) {
+
 	tests := []struct {
 		name    string
 		input   any
@@ -121,11 +124,13 @@ func TestSecureJSON(t *testing.T) {
 		{
 			name: "mask sensitive data",
 			input: TestUser{
+				ID:       uuid.MustParse("96703BDA-680E-4732-AE86-B755AAA8042F"),
 				Username: "john",
 				Password: "secret123",
 				APIKey:   "abcdef123456",
 			},
 			want: `{
+	"id": "96703bda-680e-4732-ae86-b755aaa8042f",
 	"username": "john",
 	"password": "****",
 	"api_key": "********************************"
@@ -167,11 +172,13 @@ func TestMaybeSecureJSON(t *testing.T) {
 		{
 			name: "valid sensitive data",
 			input: TestUser{
+				ID:       uuid.MustParse("0a61abc0-5577-48b9-aa71-dc6f9134cd7d"),
 				Username: "john",
 				Password: "secret123",
 				APIKey:   "abcdef123456",
 			},
 			want: `{
+	"id": "0a61abc0-5577-48b9-aa71-dc6f9134cd7d",
 	"username": "john",
 	"password": "****",
 	"api_key": "********************************"
