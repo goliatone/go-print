@@ -65,6 +65,29 @@ func HighlightJSON(data any) (string, error) {
 	return buf.String(), nil
 }
 
+func MaybeSecureHighlightJSON(data any) string {
+	out, err := SecureHighlightJSON(data)
+	if err != nil {
+		return fmt.Sprintf("error printing: %s", err)
+	}
+	return out
+}
+
+func SecureHighlightJSON(data any) (string, error) {
+	out, err := SecureJSON(data)
+	if err != nil {
+		return "", err
+	}
+
+	var buf bytes.Buffer
+	err = quick.Highlight(&buf, out, "json", "terminal16m", "nord")
+	if err != nil {
+		return "", fmt.Errorf("error highlighting: %w", err)
+	}
+
+	return buf.String(), nil
+}
+
 func SecureJSON(data any) (string, error) {
 	maskedData, err := PrintMasker.Mask(data)
 	if err != nil {
