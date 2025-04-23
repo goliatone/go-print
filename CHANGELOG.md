@@ -1,5 +1,19 @@
 # Changelog
 
+# [0.4.1](https://github.com/goliatone/go-print/compare/v0.4.0...v0.4.1) - (2025-04-23)
+
+## <!-- 1 -->🐛 Bug Fixes
+
+- Cliff template use unique commit mesages ([b05714b](https://github.com/goliatone/go-print/commit/b05714bb432e30fa4c76442638c6e9383c9f91be))  - (goliatone)
+
+## <!-- 13 -->📦 Bumps
+
+- Bump version: v0.4.1 ([34b5ab3](https://github.com/goliatone/go-print/commit/34b5ab39bc202bc798ff349c8eeb528b30398ce8))  - (goliatone)
+
+## <!-- 3 -->📚 Documentation
+
+- Update changelog for v0.4.0 ([c8f4b4a](https://github.com/goliatone/go-print/commit/c8f4b4a8f9d471fedb2c8d79b76b1d420810d466))  - (goliatone)
+
 # [0.4.0](https://github.com/goliatone/go-print/compare/v0.3.0...v0.4.0) - (2025-04-23)
 
 ## <!-- 1 -->🐛 Bug Fixes
@@ -19,7 +33,6 @@
 ## <!-- 1 -->🐛 Bug Fixes
 
 - Handle marshable or strigifiable things ([a61abf4](https://github.com/goliatone/go-print/commit/a61abf4107f00bd9a5429a8b24903b48a376fb9a))  - (goliatone)
-- Handle marshable or strigifiable things ([551dd9a](https://github.com/goliatone/go-print/commit/551dd9a87a04f4ce5d35389d726846b398366d79))  - (goliatone)
 
 ## <!-- 13 -->📦 Bumps
 
@@ -46,8 +59,6 @@
 ## <!-- 16 -->➕ Add
 
 - Highlight output ([5035d8b](https://github.com/goliatone/go-print/commit/5035d8bc3379856d0544e9fc7645e8c6f6f4aecc))  - (goliatone)
-- Highlight output ([73f9102](https://github.com/goliatone/go-print/commit/73f91023d07f268410df009983141a1a49278a75))  - (goliatone)
-- Highlight output ([7436f15](https://github.com/goliatone/go-print/commit/7436f158d7fab4ae2f576a89375795a405047eae))  - (goliatone)
 
 ## <!-- 3 -->📚 Documentation
 
@@ -94,7 +105,6 @@
 - Custom encoder to handle unsupported JSON types ([35a180b](https://github.com/goliatone/go-print/commit/35a180b8dd31a50357eafc4f2fb8220294e76dea))  - (goliatone)
 - Safe encode object to handle JSONs unsupported types ([2626035](https://github.com/goliatone/go-print/commit/2626035e0106a8aaf0e33fe4d7d97328206e227d))  - (goliatone)
 - Better error message in json parse ([c578415](https://github.com/goliatone/go-print/commit/c57841588b25be3ac3fbbfcc699b836806421589))  - (goliatone)
-- Better error message in json parse ([fc4b8b8](https://github.com/goliatone/go-print/commit/fc4b8b8fcbb0b491e7c388d8326fa0881ce5c1e4))  - (goliatone)
 
 ## <!-- 30 -->📝 Other
 
@@ -117,7 +127,6 @@
 - Readme ([70cdc1f](https://github.com/goliatone/go-print/commit/70cdc1f2ab8dfe7fce17c880d771006cd4b08f81))  - (goliatone)
 - Version ([4e3ba05](https://github.com/goliatone/go-print/commit/4e3ba05c5179b108b40a0c9c82ae542e8b6e8773))  - (goliatone)
 - Masker ([a741ee3](https://github.com/goliatone/go-print/commit/a741ee358bf3f6cbeeac2904f089d88dcba4bf43))  - (goliatone)
-- Masker ([90780a1](https://github.com/goliatone/go-print/commit/90780a1cb01e0a49d4e24fcbd39f0b8df05d3841))  - (goliatone)
 - Json print ([f84637d](https://github.com/goliatone/go-print/commit/f84637d6ef6daeb35d551e2304522fe4f76ba6bc))  - (goliatone)
 - Add http request print ([382ad2a](https://github.com/goliatone/go-print/commit/382ad2a28879382718f49a7006c3d42ba027d20d))  - (goliatone)
 
