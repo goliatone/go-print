@@ -14,6 +14,15 @@ func safeToJSON(v any) any {
 		return nil
 	}
 
+	val := reflect.ValueOf(v)
+	// handle pointers
+	if val.Kind() == reflect.Ptr {
+		if val.IsNil() {
+			return nil
+		}
+		return safeToJSON(val.Elem().Interface())
+	}
+
 	if m, ok := v.(json.Marshaler); ok {
 		b, err := m.MarshalJSON()
 		if err == nil {
@@ -27,16 +36,6 @@ func safeToJSON(v any) any {
 
 	if s, ok := v.(fmt.Stringer); ok {
 		return s.String()
-	}
-
-	val := reflect.ValueOf(v)
-
-	// handle pointers
-	if val.Kind() == reflect.Ptr {
-		if val.IsNil() {
-			return nil
-		}
-		return safeToJSON(val.Elem().Interface())
 	}
 
 	switch val.Kind() {
