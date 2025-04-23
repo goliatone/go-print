@@ -1,5 +1,19 @@
 # Changelog
 
+# [0.4.0](https://github.com/goliatone/go-print/compare/v0.3.0...v0.4.0) - (2025-04-23)
+
+## <!-- 1 -->🐛 Bug Fixes
+
+- Ensure we check for nil before proceeding ([4433b78](https://github.com/goliatone/go-print/commit/4433b78f297ee7e4bc5ea5f1b217cb25b73f5648))  - (goliatone)
+
+## <!-- 13 -->📦 Bumps
+
+- Bump version: v0.4.0 ([da041e2](https://github.com/goliatone/go-print/commit/da041e2b29cc9a7920c7c7afe15d919867d143bf))  - (goliatone)
+
+## <!-- 3 -->📚 Documentation
+
+- Update changelog for v0.3.0 ([1ea3c5f](https://github.com/goliatone/go-print/commit/1ea3c5fc68ca9f48e4f3c1c1420ac2232d0d4786))  - (goliatone)
+
 # [0.3.0](https://github.com/goliatone/go-print/compare/v0.2.0...v0.3.0) - (2025-04-18)
 
 ## <!-- 1 -->🐛 Bug Fixes
